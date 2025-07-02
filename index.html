@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RealSolution - Smart Business Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="home.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <div class="nav-left">
+        <h1 class="brand-title">RealSolution</h1>
+      </div>
+      <div class="nav-right">
+        <div class="lang-user-group">
+          <div class="lang-switch">
+            <select class = "language-select" >
+              <option>English</option>
+              <option>Tamil</option>
+            </select>
+          </div>
+          <div class="user-menu-wrapper">
+            <i class="fas fa-user-circle" id="user-icon"></i>
+            <div class="dropdown-menu" id="user-dropdown"></div>
+          </div>
+          <button id="logout-btn" class="button small-btn" style="display: none;">Logout</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <h2>Smart Business Tool for Tamil Nadu Shopkeepers</h2>
+    <p>Manage attendance, billing, stock, and reports with ease — all in one place.</p>
+    <a class="button feature-link" data-feature="attendance">Get Started</a>
+  </header>
+
+  <section class="features" id="features">
+    <h2>Features</h2>
+    <div class="feature-grid">
+      <div class="card feature-link" data-feature="attendance">📋 <strong>Staff Attendance</strong><br>Track employee presence.</div>
+      <div class="card feature-link" data-feature="billing">💬 <strong>WhatsApp Billing</strong><br>Send invoices instantly.</div>
+      <div class="card feature-link" data-feature="stock">📦 <strong>Stock Management</strong><br>Track inventory.</div>
+      <div class="card feature-link" data-feature="reports">📈 <strong>Monthly Reports</strong><br>View summaries.</div>
+    </div>
+  </section>
+
+  <section class="pricing">
+  <h2>Pricing Plans</h2>
+  <div class="pricing-table">
+    <div class="card">
+      <h3>Free</h3>
+      <p class="price">₹0/month</p>
+      <ul>
+        <li>✔️ 14-day Trial</li>
+        <li>✔️ All Features</li>
+        <li>✔️ 1 Staff Only</li>
+      </ul>
+      <button class="button select-plan" data-plan="Free">Try Free</button>
+    </div>
+    <div class="card">
+      <h3>Starter</h3>
+      <p class="price">₹99/month</p>
+      <ul>
+        <li>✔️ Staff Attendance</li>
+        <li>✔️ Stock Management</li>
+        <li>✔️ Basic Billing</li>
+      </ul>
+      <button class="button select-plan" data-plan="Starter">Get Started</button>
+    </div>
+    <div class="card highlighted">
+      <h3>Growth ⭐</h3>
+      <p class="price">₹199/month</p>
+      <ul>
+        <li>✔️ WhatsApp Billing</li>
+        <li>✔️ Multi-staff Access</li>
+        <li>✔️ Monthly Reports</li>
+      </ul>
+      <button class="button select-plan" data-plan="Growth">Upgrade</button>
+    </div>
+    <div class="card">
+      <h3>Pro+</h3>
+      <p class="price">₹299/month</p>
+      <ul>
+        <li>✔️ All Features</li>
+        <li>✔️ Phone Support</li>
+        <li>✔️ Export Reports</li>
+      </ul>
+      <button class="button select-plan" data-plan="Pro+">Go Pro</button>
+    </div>
+  </div>
+</section>
+
+
+  <section class="contact" id="contact">
+    <h2>Contact Us</h2>
+    <form>
+      <input type="text" placeholder="Your Name">
+      <input type="email" placeholder="Your Email">
+      <textarea placeholder="Your Message"></textarea>
+      <button type="submit" class="button">Send Message</button>
+    </form>
+  </section>
+
+  <footer>
+    © 2025 RealSolution. All rights reserved. | <a href="#">Terms</a> | <a href="#">Privacy</a>
+  </footer>
+
+  <!-- Login Modal -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="modal-container">
+      <h3>🔐 Login to Continue</h3>
+      <form id="modal-login-form">
+        <input type="email" id="modal-email" placeholder="Email" required />
+        <input type="password" id="modal-password" placeholder="Password" required />
+        <div class="modal-buttons">
+          <button type="submit" class="primary-btn">Login</button>
+          <button type="button" id="close-modal" class="secondary-btn">Cancel</button>
+        </div>
+      </form>
+      <p>Don't have an account? <a href="#" id="show-register">Register</a></p>
+      <div id="modal-error" class="error-msg"></div>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+<div id="register-modal" class="modal-overlay">
+  <div class="modal-container">
+    <h3>📝 Register</h3>
+    <form id="register-form">
+      <input type="text" id="register-name" placeholder="Your Name" required />
+      <input type="text" id="register-business" placeholder="Business Model" required />
+      <input type="email" id="register-email" placeholder="Email" required />
+      <input type="password" id="register-password" placeholder="Password" required />
+      <div class="modal-buttons">
+        <button type="submit" class="primary-btn">Register</button>
+        <button type="button" id="close-register" class="secondary-btn">Cancel</button>
+      </div>
+    </form>
+    <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+    <div id="register-error" class="error-msg"></div>
+  </div>
+</div>
+
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+    createUserWithEmailAndPassword, signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getDatabase, ref, set, update
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyACineoJn90FcNvq_r9lOFrMPrFyKodPXc",
+    authDomain: "attendance-system-b186e.firebaseapp.com",
+    projectId: "attendance-system-b186e",
+    storageBucket: "attendance-system-b186e.appspot.com",
+    messagingSenderId: "862086777316",
+    appId: "1:862086777316:web:6c8dcbba6d2d3adfeedff1",
+    databaseURL: "https://attendance-system-b186e-default-rtdb.firebaseio.com"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const database = getDatabase(app);
+
+  const modal = document.getElementById("auth-modal");
+  const registerModal = document.getElementById("register-modal");
+
+  const logoutBtn = document.getElementById("logout-btn");
+  const closeModal = document.getElementById("close-modal");
+  const closeRegister = document.getElementById("close-register");
+  const showRegister = document.getElementById("show-register");
+  const showLogin = document.getElementById("show-login");
+
+  onAuthStateChanged(auth, (user) => {
+    const userIcon = document.getElementById("user-icon");
+const userDropdown = document.getElementById("user-dropdown");
+
+let currentUserName = "";
+
+onAuthStateChanged(auth, (user) => {
+  logoutBtn.style.display = user ? "inline-block" : "none";
+  if (user) {
+    currentUserName = user.email; // or fetch name from DB
+  } else {
+    currentUserName = "";
+  }
+});
+
+// Toggle dropdown on icon click
+userIcon.addEventListener("click", () => {
+  if (userDropdown.style.display === "block") {
+    userDropdown.style.display = "none";
+  } else {
+    userDropdown.innerHTML = "";
+    if (auth.currentUser) {
+      // Logged in view
+      userDropdown.innerHTML = `
+        <div><strong>${currentUserName}</strong></div>
+        <div id="dropdown-logout">Logout</div>
+      `;
+    } else {
+      // Not logged in view
+      userDropdown.innerHTML = `
+        <div id="dropdown-login">Login</div>
+        <div id="dropdown-register">Register</div>
+      `;
+    }
+    userDropdown.style.display = "block";
+  }
+});
+
+// Logout handling
+document.addEventListener("click", (event) => {
+  if (!userIcon.contains(event.target) && !userDropdown.contains(event.target)) {
+    userDropdown.style.display = "none";
+  }
+});
+
+document.addEventListener("click", (e) => {
+  if (e.target.id === "dropdown-logout") {
+    signOut(auth).then(() => window.location.reload());
+  } else if (e.target.id === "dropdown-login") {
+    userDropdown.style.display = "none";
+    modal.style.display = "flex";
+  } else if (e.target.id === "dropdown-register") {
+    userDropdown.style.display = "none";
+    registerModal.style.display = "flex";
+  }
+});
+
+  });
+
+  logoutBtn.addEventListener("click", () => {
+    signOut(auth).then(() => window.location.reload());
+  });
+
+  document.querySelectorAll(".feature-link").forEach(el => {
+    el.addEventListener("click", () => {
+      auth.currentUser ? window.location.href = el.dataset.feature + ".html" : modal.style.display = "flex";
+    });
+  });
+
+  showRegister.addEventListener("click", () => {
+    modal.style.display = "none";
+    registerModal.style.display = "flex";
+  });
+
+  showLogin.addEventListener("click", () => {
+    registerModal.style.display = "none";
+    modal.style.display = "flex";
+  });
+
+  closeModal.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  closeRegister.addEventListener("click", () => {
+    registerModal.style.display = "none";
+  });
+
+  // LOGIN FORM
+  document.getElementById("modal-login-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("modal-email").value;
+    const password = document.getElementById("modal-password").value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      modal.style.display = "none";
+      window.location.reload();
+    } catch (err) {
+      document.getElementById("modal-error").textContent = "❌ " + err.message;
+    }
+  });
+
+  // REGISTER FORM
+  document.getElementById("register-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = document.getElementById("register-name").value;
+    const businessModel = document.getElementById("register-business").value;
+    const email = document.getElementById("register-email").value;
+    const password = document.getElementById("register-password").value;
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = userCredential.user.uid;
+
+      await set(ref(database, "users/" + uid), {
+        name: name,
+        businessModel: businessModel,
+        email: email
+      });
+
+      registerModal.style.display = "none";
+      window.location.reload();
+    } catch (err) {
+      document.getElementById("register-error").textContent = "❌ " + err.message;
+    }
+  });
+
+  // ✅ PLAN SELECTION SCRIPT
+  document.querySelectorAll(".select-plan").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const plan = btn.dataset.plan;
+      const user = auth.currentUser;
+
+      if (!user) {
+        modal.style.display = "flex";
+        return;
+      }
+
+      try {
+        await update(ref(database, "users/" + user.uid), {
+          plan: plan
+        });
+        alert(`✅ You selected the ${plan} plan`);
+      } catch (err) {
+        alert("❌ Error saving plan: " + err.message);
+      }
+    });
+  });
+</script>
+
+    <tbody id="stockBody"></tbody>
+  </body>
+</html>
